@@ -3,11 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define EBUSIZE 65536
+#define EBUSIZE 655
 #define DECMAX(x) (x > 1 ? x-- : 1)
 
 char ebu[EBUSIZE];
-char *cursor, *tail;
+char *bol, *tail;
 int row, col;
 
 void insertmode ()
@@ -16,7 +16,7 @@ void insertmode ()
   char c, *p, *cursorold;
   int n=0;
   
-  cursorold=cursor+col-1;
+  cursorold=bol+col-1;
   while ((c=getchar())!='r') {
     linebuf[n++]=c;
     col++;
@@ -26,7 +26,7 @@ void insertmode ()
     *(p+n) = *p;
   }
   
-  for (p=linebuf; cursorold < cursor + col-1; cursorold++) {
+  for (p=linebuf; cursorold < bol + col-1; cursorold++) {
     *cursorold++ = *p++;;
   }
 
@@ -39,11 +39,14 @@ int main(int argc, const char** argv)
   int i, j;
   char c;
 
+  for (j=0; j< sizeof ebu; j++) {
+    ebu[j]='z';
+  }
   system("stty raw -echo opost");
   f=fopen("a.txt","r");
   i=fread(ebu, 1, sizeof ebu, f);
   tail=ebu+i;
-  cursor=ebu;
+  bol=ebu;
   row=col=1;
 
   fputs("\033[H",stdout);  /* cursor home */
@@ -55,23 +58,26 @@ int main(int argc, const char** argv)
     c=getchar();
     switch (c) {
     case 'h': fputs("\033[D",stdout); DECMAX(col); break;
-    case 'j': fputs("\033[A",stdout); DECMAX(row);
-      while (*cursor != '\n') cursor--;
+    case 'j': fputs("\033[A",stdout); //DECMAX(row);
+      if (row>1) {
+        row--;
+        bol--; bol--; while (*bol != '\n') bol--; bol++;
+      }
       break;
     case 'k': fputs("\033[B",stdout); row++;
-      while (*cursor != '\n') cursor++; cursor++;
+      while (*bol != '\n') bol++; bol++;
       break;
     case 'l': fputs("\033[C",stdout); col++; break;
     case 'i': insertmode(); break;
     case 'd':
+      printf("bolchar %c row %d col %d\n",*bol, row,col);
       fputs("\033[H",stdout);
-      for (j=0; j<i; j++) {
+      for (j=0; j< sizeof ebu; j++) {
 	fputc(ebu[j],stdout);
       }
-      fputs("\033[H",stdout); col=row=1;
+      fputs("\033[H",stdout); col=row=1; bol=ebu;
       break;
     case 'r':
-      printf("row %d col %d\n",row,col);
       break;
     }
 
