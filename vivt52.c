@@ -8,7 +8,7 @@
 
 char ebu[EBUSIZE];
 char *bol, str[80];
-int i, row, col, nb;
+int i, nb, row, col;
 
 void insertmode ()
 {
@@ -16,7 +16,10 @@ void insertmode ()
   int n=0;
   
   while ((c=getchar())!='\r') {
-//    putchar(c);
+    putchar(c);
+    fputs("\0337",stdout);
+    p=bol+col-1; while (*p!='\n') putchar(*p++);
+    fputs("\0338",stdout);
     str[n++]=c;
     col++;
   }
@@ -46,7 +49,7 @@ int main(int argc, const char** argv)
   bol=ebu;
   row=col=1;
 
-  fputs("\033[H",stdout);  /* cursor home */
+  fputs("\033[H\033[J",stdout);  /* cursor home clear screen */
   for (i=0; i<nb; i++) {
     fputc(ebu[i],stdout);
   }
@@ -74,7 +77,8 @@ int main(int argc, const char** argv)
       printf("bolchar %c row %d col %d\n",*bol, row,col);
       fputs("\033[H",stdout); col=row=1; bol=ebu;
       break;
-    case 'r':
+    case 'r': fputs("\0338",stdout); break;
+    case 's': fputs("\0337",stdout); break;
       break;
     }
 
