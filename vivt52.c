@@ -7,52 +7,48 @@
 #define DECMAX(x) (x > 1 ? x-- : 1)
 
 char ebu[EBUSIZE];
-char *bol, *tail;
-int row, col, nb;
+char *bol, str[80];
+int i, row, col, nb;
 
 void insertmode ()
 {
-  static char linebuf[80];
-  char c, *p, *cursorold;
+  char c, *p;
   int n=0;
   
-  cursorold=bol+col-1;
-  while ((c=getchar())!='r') {
+  while ((c=getchar())!='\r') {
 //    putchar(c);
-    linebuf[n++]=c;
+    str[n++]=c;
     col++;
   }
 
-  for (p=tail; p >= cursorold; p--) { /* make room.  yes movemove() is faster */
+  for (p=ebu+nb-1; p >= bol+col-n-1; p--) { /* make room.  yes movemove() is faster */
     *(p+n) = *p;
   }
   
-  for (p=linebuf; cursorold < bol + col-1; cursorold++) {
-    *cursorold++ = *p++;;
+  for (p++, i=0; p < bol + col-1; p++, i++) {
+    *p = str[i];
   }
-
+  nb += n;
 
 }
 
 int main(int argc, const char** argv)
 {
   FILE *f;
-  int i, j;
   char c;
 
-  for (j=0; j< sizeof ebu; j++) {
-    ebu[j]='z';
+  for (i=0; i< sizeof ebu; i++) {
+    ebu[i]='z';
   }
   system("stty raw -echo opost");
   f=fopen("a.txt","r");
-  i=fread(ebu, 1, sizeof ebu, f);
-  tail=ebu+i;
+  nb=fread(ebu, 1, sizeof ebu, f);
   bol=ebu;
   row=col=1;
 
   fputs("\033[H",stdout);  /* cursor home */
-  for (j=0; j<i; j++) {
-    fputc(ebu[j],stdout);
+  for (i=0; i<nb; i++) {
+    fputc(ebu[i],stdout);
   }
   
   do {
@@ -71,11 +67,11 @@ int main(int argc, const char** argv)
     case 'l': fputs("\033[C",stdout); col++; break;
     case 'i': insertmode(); break;
     case 'd':
-      printf("bolchar %c row %d col %d\n",*bol, row,col);
-      fputs("\033[H",stdout);
-      for (j=0; j< sizeof ebu; j++) {
-	fputc(ebu[j],stdout);
+      fputs("\033[H\033[J",stdout);
+      for (i=0; i< sizeof ebu; i++) {
+	fputc(ebu[i],stdout);
       }
+      printf("bolchar %c row %d col %d\n",*bol, row,col);
       fputs("\033[H",stdout); col=row=1; bol=ebu;
       break;
     case 'r':
