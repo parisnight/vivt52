@@ -8,7 +8,7 @@
 
 char ebu[EBUSIZE];
 char *bol, *tail;
-int row, col;
+int row, col, nb;
 
 void insertmode ()
 {
@@ -18,6 +18,7 @@ void insertmode ()
   
   cursorold=bol+col-1;
   while ((c=getchar())!='r') {
+//    putchar(c);
     linebuf[n++]=c;
     col++;
   }
