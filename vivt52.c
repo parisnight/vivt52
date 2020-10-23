@@ -18,7 +18,7 @@ void insertmode ()
   while ((c=getchar())!='\r') {
     putchar(c);
     fputs("\0337",stdout);
-    p=bol+col-1; while (*p!='\n') putchar(*p++);
+    p=bol+col-n-1; while (*p!='\n') putchar(*p++);
     fputs("\0338",stdout);
     str[n++]=c;
     col++;
