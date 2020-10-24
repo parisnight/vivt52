@@ -7,12 +7,12 @@
 #define DECMAX(x) (x > 1 ? x-- : 1)
 
 char ebu[EBUSIZE];
-char *bol, str[80];
+char *bol, str[80], *p;
 int i, nb, row, col;
 
 void insertmode ()
 {
-  char c, *p;
+  char c;
   int n=0;
   
   while ((c=getchar())!='\r') {
@@ -32,6 +32,12 @@ void insertmode ()
     *p = str[i];
   }
   nb += n;
+
+}
+
+movecursor(int row, int col)
+{
+puts("\033[");
 
 }
 
@@ -58,27 +64,40 @@ int main(int argc, const char** argv)
     c=getchar();
     switch (c) {
     case 'h': fputs("\033[D",stdout); DECMAX(col); break;
-    case 'j': fputs("\033[A",stdout); //DECMAX(row);
-      if (row>1) {
-        row--;
-        bol--; bol--; while (*bol != '\n') bol--; bol++;
+    case 'j':
+      if (bol < ebu+nb) {
+        while (*bol != '\n') bol++; bol++;
+        fputs("\033D",stdout);
+        if (row>36) {
+          fputs("\0337",stdout);
+          for (p=bol; *p!='\n'; p++) putchar(*p);
+          fputs("\0338",stdout);
+        } else row++;
       }
       break;
-    case 'k': fputs("\033[B",stdout); row++;
-      while (*bol != '\n') bol++; bol++;
+    case 'k':
+      if (bol > ebu ) {
+        bol--; while (bol>ebu && *(bol-1) != '\n') bol--;
+        fputs("\033[A",stdout);
+        if (row==1) {
+          fputs("\0337",stdout);
+          for (p=bol; *p!='\n'; p++) putchar(*p);
+          fputs("\0338",stdout);
+        } else row--;
+      }
       break;
     case 'l': fputs("\033[C",stdout); col++; break;
     case 'i': insertmode(); break;
     case 'd':
       fputs("\033[H\033[J",stdout);
-      for (i=0; i< sizeof ebu; i++) {
+      for (i=0; i<nb; i++) { //i< sizeof ebu; i++) {
 	fputc(ebu[i],stdout);
       }
       printf("bolchar %c row %d col %d\n",*bol, row,col);
       fputs("\033[H",stdout); col=row=1; bol=ebu;
       break;
-    case 'r': fputs("\0338",stdout); break;
-    case 's': fputs("\0337",stdout); break;
+    case 'r': fputs("\033D",stdout); break;
+    case 's': fputs("\033M",stdout); break;
       break;
     }
 
