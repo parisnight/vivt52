@@ -5,6 +5,7 @@
 
 #define EBUSIZE 655
 #define DECMAX(x) (x > 1 ? x-- : 1)
+#define ROWM 35
 
 char ebu[EBUSIZE];
 char *bol, str[80], *p;
@@ -68,7 +69,7 @@ int main(int argc, const char** argv)
       if (bol < ebu+nb) {
         while (*bol != '\n') bol++; bol++;
         fputs("\033D",stdout);
-        if (row>36) {
+        if (row>ROWM+1) {
           fputs("\0337",stdout);
           for (p=bol; *p!='\n'; p++) putchar(*p);
           fputs("\0338",stdout);
@@ -78,7 +79,7 @@ int main(int argc, const char** argv)
     case 'k':
       if (bol > ebu ) {
         bol--; while (bol>ebu && *(bol-1) != '\n') bol--;
-        fputs("\033[A",stdout);
+        fputs("\033M",stdout);
         if (row==1) {
           fputs("\0337",stdout);
           for (p=bol; *p!='\n'; p++) putchar(*p);
@@ -90,8 +91,9 @@ int main(int argc, const char** argv)
     case 'i': insertmode(); break;
     case 'd':
       fputs("\033[H\033[J",stdout);
-      for (i=0; i<nb; i++) { //i< sizeof ebu; i++) {
-	fputc(ebu[i],stdout);
+      for (p=ebu, i=0; i<ROWM; p++) { //i< sizeof ebu; i++) {
+	fputc(*p,stdout);
+        if (*(p+1)=='\n') i++;
       }
       printf("bolchar %c row %d col %d\n",*bol, row,col);
       fputs("\033[H",stdout); col=row=1; bol=ebu;
