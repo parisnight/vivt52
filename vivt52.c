@@ -39,7 +39,6 @@ void insertmode ()
 movecursor(int row, int col)
 {
 puts("\033[");
-
 }
 
 int main(int argc, const char** argv)
