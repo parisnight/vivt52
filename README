@@ -2,8 +2,12 @@
 
 ESC IIIIII F  where I el [0x20,0x2f] and F el [0x30,0x7e]
 
-esc [H
+esc [H home
 esc [J clear to end of screen
+esc [D cursor left
+esc D scroll down
+esc M scroll up
+esc [C cursor right
 esc 7 store cursor pos
 esc 8 restore cursor pos
 
