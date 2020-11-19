@@ -5,7 +5,7 @@
 
 #define EBUSIZE 655
 #define DECMAX(x) (x > 1 ? x-- : 1)
-#define ROWM 35
+#define ROWM 39
 
 char ebu[EBUSIZE];
 char *bol, str[80], *p;
@@ -68,7 +68,7 @@ int main(int argc, const char** argv)
       if (bol < ebu+nb) {
         while (*bol != '\n') bol++; bol++;
         fputs("\033D",stdout);
-        if (row>ROWM+1) {
+        if (row>ROWM-1) {
           fputs("\0337",stdout);
           for (p=bol; *p!='\n'; p++) putchar(*p);
           fputs("\0338",stdout);
