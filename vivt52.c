@@ -16,7 +16,7 @@ void insertmode ()
   char c;
   int n=0;
   
-  while ((c=getchar())!='q') {
+  while ((c=getchar())!='\033') {
     if (c=='\r') {
       c='\n';
       fputs("\033[K",stdout);
