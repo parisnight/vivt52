@@ -16,7 +16,11 @@ void insertmode ()
   char c;
   int n=0;
   
-  while ((c=getchar())!='\r') {
+  while ((c=getchar())!='q') {
+    if (c=='\r') {
+      c='\n';
+      fputs("\033[K",stdout);
+    }
     putchar(c);
     fputs("\0337",stdout);
     p=bol+col-n-1; while (*p!='\n') putchar(*p++);
