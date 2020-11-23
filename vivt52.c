@@ -54,8 +54,8 @@ int main(int argc, const char** argv)
     ebu[i]='z';
   }
   system("stty raw -echo opost");
-  f=fopen("a.txt","r");
-  nb=fread(ebu, 1, sizeof ebu, f);
+  if ((f=fopen(argv[1],"r"))!=NULL) nb=fread(ebu, 1, sizeof ebu, f);
+  else exit(-1);
   bol=ebu;
   row=col=1;
 
