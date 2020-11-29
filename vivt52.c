@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define EBUSIZE 655
+#define EBUSIZE 65536
 #define DECMAX(x) (x > 1 ? x-- : 1)
 #define ROWM 39
 
