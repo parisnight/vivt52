@@ -73,7 +73,7 @@ int main(int argc, const char** argv)
         while (*bol != '\n') bol++; bol++;
         fputs("\033D",stdout);
         if (row>ROWM-1) {
-          fputs("\0337",stdout);
+          fputs("\0337\r",stdout);
           for (p=bol; *p!='\n'; p++) putchar(*p);
           fputs("\0338",stdout);
         } else row++;
@@ -84,7 +84,7 @@ int main(int argc, const char** argv)
         bol--; while (bol>ebu && *(bol-1) != '\n') bol--;
         fputs("\033M",stdout);
         if (row==1) {
-          fputs("\0337",stdout);
+          fputs("\0337\r",stdout);
           for (p=bol; *p!='\n'; p++) putchar(*p);
           fputs("\0338",stdout);
         } else row--;
