@@ -5,11 +5,10 @@
 
 #define EBUSIZE 65536
 #define DECMAX(x) (x > 1 ? x-- : 1)
-#define ROWM 39
 
 char ebu[EBUSIZE];
 char *bol, str[80], *p;
-int i, nb, row, col;
+int i, nb, row, col, ROWM=39;
 
 void insertmode ()
 {
@@ -93,12 +92,15 @@ int main(int argc, const char** argv)
     case 'l': fputs("\033[C",stdout); col++; break;
     case 'i': insertmode(); break;
     case 'd':
+//      ROWM = atoi(getenv("LINES")) - 1;
+printf ("asdf %s\n",getenv("LINES"));
+break;
       fputs("\033[H\033[J",stdout);
       for (p=ebu, i=0; i<ROWM; p++) { //i< sizeof ebu; i++) {
 	fputc(*p,stdout);
         if (*(p+1)=='\n') i++;
       }
-      printf("bolchar %c row %d col %d\n",*bol, row,col);
+      printf("bolchar %c row %d col %d ROWM %d\n",*bol, row,col,ROWM);
       fputs("\033[H",stdout); col=row=1; bol=ebu;
       break;
     case 'r': fputs("\033D",stdout); break;
