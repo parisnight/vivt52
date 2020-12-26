@@ -92,9 +92,8 @@ int main(int argc, const char** argv)
     case 'l': fputs("\033[C",stdout); col++; break;
     case 'i': insertmode(); break;
     case 'd':
-//      ROWM = atoi(getenv("LINES")) - 1;
-printf ("asdf %s\n",getenv("LINES"));
-break;
+//ROWM = atoi(system("stty size")) - 1;
+      if (p = getenv("LINES")) ROWM = atoi(p) - 1;
       fputs("\033[H\033[J",stdout);
       for (p=ebu, i=0; i<ROWM; p++) { //i< sizeof ebu; i++) {
 	fputc(*p,stdout);
