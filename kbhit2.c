@@ -13,14 +13,15 @@ int main(int argc, const char** argv)
 
     do {
           c=getchar();
-          putc(c+1,stdout);
+          if (c>=32) putc(c+1,stdout); /* control characters can ruin screen */
           fflush(stdout);  /* necessary to push out character */
 	  if (c=='d') {
 	    scanf("%d",&i);
 	    printf("integer %d\n",i);
 	  }
 	  else if (c=='s') {
-	    fgets(s,8,stdin);	/* use C-j to terminate in raw mode */
+	    /*fgets(s,8,stdin);*/	/* use C-j to terminate in raw mode */
+            i=0; while ((c=getchar())!='\r') s[i++]=c; s[i]='\0';
 	    printf("string %s\n",s);
 	  }
     } while (c!='q');
