@@ -1,4 +1,4 @@
-/* single character keyboard input like olden days */
+/* keyboard single character input like olden days */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,15 +12,15 @@ int main(int argc, const char** argv)
     system("stty -icanon"); /* raw */
 
     do {
-          c=getchar();
+          c=fgetc(stdin);
           if (c>=32) putc(c+1,stdout); /* control characters can ruin screen */
           fflush(stdout);  /* necessary to push out character */
 	  if (c=='d') {
-	    scanf("%d",&i);
+	    fscanf(stdin,"%d",&i);
 	    printf("integer %d\n",i);
 	  }
 	  else if (c=='s') {
-	    fgets(s,8,stdin);	/* use C-j to terminate in raw mode or below */
+	    fgets(s,8,stdin);	/* raw C-j terminate or below, or canon */
             /* i=0; while ((c=getchar())!='\r') s[i++]=c; s[i]='\0'; */
 	    printf("string %s\n",s);
 	  }
