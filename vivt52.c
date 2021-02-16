@@ -39,7 +39,7 @@ void insertmode ()
 
 }
 
-movecursor(int row, int col)
+void movecursor(int row, int col)
 {
 puts("\033[");
 }
@@ -103,7 +103,8 @@ int main(int argc, const char** argv)
       fputs("\033[H",stdout); col=row=1; bol=ebu;
       break;
     case 'r': fputs("\033D",stdout); break;
-    case 's':
+    case 's': fputs("\033M",stdout); break;
+    case 'w':
       if ((f=fopen(argv[1],"wa"))!=NULL) nb=fwrite(ebu, 1, nb, f);
       break;
     }
