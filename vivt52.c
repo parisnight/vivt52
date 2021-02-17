@@ -31,12 +31,10 @@ void insertmode ()
   for (p=ebu+nb-1; p >= bol+col-n-1; p--) { /* make room.  yes movemove() is faster */
     *(p+n) = *p;
   }
-  
   for (p++, i=0; p < bol + col-1; p++, i++) {
     *p = str[i];
   }
   nb += n;
-
 }
 
 void movecursor(int row, int col)
