@@ -37,11 +37,6 @@ void insertmode ()
   nb += n;
 }
 
-void movecursor(int row, int col)
-{
-puts("\033[");
-}
-
 int main(int argc, const char** argv)
 {
   FILE *f;
