@@ -9,6 +9,7 @@ fewest esc commands
 ESC IIIIII F  where I el [0x20,0x2f] and F el [0x30,0x7e]
 CSI ESD [ commands  terminator el [0x40,0x7e] ie no numbers in the command sequence
 
+vt commands used:
 esc [H home
 esc [J clear to end of screen
 esc [D cursor left
