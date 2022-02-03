@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/ioctl.h>
 
 #define EBUSIZE 65536
 #define DECMAX(x) (x > 1 ? x-- : 1)
@@ -41,6 +42,7 @@ int main(int argc, const char** argv)
 {
   FILE *f;
   char c;
+  struct winsize w;
 
   for (i=0; i< sizeof ebu; i++) {
     ebu[i]='z';
@@ -86,7 +88,9 @@ int main(int argc, const char** argv)
     case 'i': insertmode(); break;
     case 'd':
       /*ROWM = atoi(system("stty size")) - 1; */
-      if (p = getenv("LINES")) ROWM = atoi(p) - 1;
+      /* if (p = getenv("LINES")) ROWM = atoi(p) - 1;*/
+      ioctl(0,TIOCGWINSZ,&w);
+      ROWM=w.ws_row-1;
       fputs("\033[H\033[J",stdout);
       for (p=ebu, i=0; i<ROWM; p++) { //i< sizeof ebu; i++) {
 	fputc(*p,stdout);
