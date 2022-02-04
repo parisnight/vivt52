@@ -6,10 +6,20 @@ smallest program
 least amount of input/output
 fewest esc commands
 
+h left
+j down
+k up
+l right
+i insert mode
+escape insert mode exit
+w write to disk
+d refresh screen
+
+esc commands used:
+
 ESC IIIIII F  where I el [0x20,0x2f] and F el [0x30,0x7e]
 CSI ESD [ commands  terminator el [0x40,0x7e] ie no numbers in the command sequence
 
-vt commands used:
 esc [H home
 esc [J clear to end of screen
 esc [D cursor left
