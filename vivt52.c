@@ -38,6 +38,22 @@ void insertmode ()
   nb += n;
 }
 
+void redraw ()
+{
+struct winsize w;
+system("stty raw -echo opost isig susp \\^Z");
+      /*ROWM = atoi(system("stty size")) - 1; needs some parsing */
+      /* if (p = getenv("LINES")) ROWM = atoi(p) - 1; needs export */
+      ioctl(0,TIOCGWINSZ,&w); ROWM=w.ws_row-1;
+      fputs("\033[H\033[J",stdout);
+      for (i=0, p=bol; i<ROWM && (p-ebu)<nb; p++) { //i< sizeof ebu; i++) {
+	fputc(*p,stdout);
+        if (*(p+1)=='\n') i++;
+      }
+      printf("bolchar %c row %d col %d ROWM %d\n",*bol, row,col,ROWM);
+      fputs("\033[H",stdout); col=row=1; bol=ebu;
+}
+
 int main(int argc, const char** argv)
 {
   FILE *f;
@@ -47,17 +63,18 @@ int main(int argc, const char** argv)
   for (i=0; i< sizeof ebu; i++) {
     ebu[i]='z';
   }
-  system("stty raw -echo opost");
+  system("stty raw -echo opost isig susp \\^Z");
   if ((f=fopen(argv[1],"r"))!=NULL) nb=fread(ebu, 1, sizeof ebu, f);
   else exit(-1);
   bol=ebu;
   row=col=1;
 
-  fputs("\033[H\033[J",stdout);  /* cursor home clear screen */
-  for (i=0; i<nb; i++) {
-    fputc(ebu[i],stdout);
-  }
+//  fputs("\033[H\033[J",stdout);  /* cursor home clear screen */
+//  for (i=0; i<nb; i++) {
+//    fputc(ebu[i],stdout);
+//  }
   
+  redraw();
   do {
     c=getchar();
     switch (c) {
@@ -86,13 +103,14 @@ int main(int argc, const char** argv)
       break;
     case 'l': fputs("\033[C",stdout); col++; break;
     case 'i': insertmode(); break;
-    case 'd':
+    case 'd': redraw(); break;
+    case 'e':
+  system("stty raw -echo opost isig susp \\^Z");
       /*ROWM = atoi(system("stty size")) - 1; needs some parsing */
       /* if (p = getenv("LINES")) ROWM = atoi(p) - 1; needs export */
-      ioctl(0,TIOCGWINSZ,&w);
-      ROWM=w.ws_row-1;
+      ioctl(0,TIOCGWINSZ,&w); ROWM=w.ws_row-1;
       fputs("\033[H\033[J",stdout);
-      for (p=ebu, i=0; i<ROWM && p-ebu<nb; p++) { //i< sizeof ebu; i++) {
+      for (i=0, p=ebu; i<ROWM && (p-ebu)<nb; p++) { //i< sizeof ebu; i++) {
 	fputc(*p,stdout);
         if (*(p+1)=='\n') i++;
       }
