@@ -40,18 +40,19 @@ void insertmode ()
 
 void redraw ()
 {
-struct winsize w;
-system("stty raw -echo opost isig susp \\^Z");
-      /*ROWM = atoi(system("stty size")) - 1; needs some parsing */
-      /* if (p = getenv("LINES")) ROWM = atoi(p) - 1; needs export */
-      ioctl(0,TIOCGWINSZ,&w); ROWM=w.ws_row-1;
-      fputs("\033[H\033[J",stdout);
-      for (i=0, p=bol; i<ROWM && (p-ebu)<nb; p++) { //i< sizeof ebu; i++) {
-	fputc(*p,stdout);
-        if (*(p+1)=='\n') i++;
-      }
-      printf("bolchar %c row %d col %d ROWM %d\n",*bol, row,col,ROWM);
-      fputs("\033[H",stdout); col=row=1; bol=ebu;
+  struct winsize w;
+  system("stty raw -echo opost isig"); /* isig to allow suspending */
+  /*ROWM = atoi(system("stty size")) - 1; needs some parsing */
+  /* if (p = getenv("LINES")) ROWM = atoi(p) - 1; needs export */
+  ioctl(0,TIOCGWINSZ,&w); ROWM=w.ws_row-1;
+  fputs("\033[H\033[J",stdout);
+  for (i=0, p=bol; i<ROWM && (p-ebu)<nb; p++) {
+    fputc(*p,stdout);
+    if (*(p+1)=='\n') i++;
+  }
+  //      printf("bolchar %c row %d col %d ROWM %d\n",*bol, row,col,ROWM);
+  fputs("\033[H",stdout);
+  col=row=1;
 }
 
 int main(int argc, const char** argv)
@@ -68,13 +69,8 @@ int main(int argc, const char** argv)
   else exit(-1);
   bol=ebu;
   row=col=1;
-
-//  fputs("\033[H\033[J",stdout);  /* cursor home clear screen */
-//  for (i=0; i<nb; i++) {
-//    fputc(ebu[i],stdout);
-//  }
-  
   redraw();
+
   do {
     c=getchar();
     switch (c) {
@@ -104,19 +100,6 @@ int main(int argc, const char** argv)
     case 'l': fputs("\033[C",stdout); col++; break;
     case 'i': insertmode(); break;
     case 'd': redraw(); break;
-    case 'e':
-  system("stty raw -echo opost isig susp \\^Z");
-      /*ROWM = atoi(system("stty size")) - 1; needs some parsing */
-      /* if (p = getenv("LINES")) ROWM = atoi(p) - 1; needs export */
-      ioctl(0,TIOCGWINSZ,&w); ROWM=w.ws_row-1;
-      fputs("\033[H\033[J",stdout);
-      for (i=0, p=ebu; i<ROWM && (p-ebu)<nb; p++) { //i< sizeof ebu; i++) {
-	fputc(*p,stdout);
-        if (*(p+1)=='\n') i++;
-      }
-      printf("bolchar %c row %d col %d ROWM %d\n",*bol, row,col,ROWM);
-      fputs("\033[H",stdout); col=row=1; bol=ebu;
-      break;
     case 'r': fputs("\033D",stdout); break;
     case 's': fputs("\033M",stdout); break;
     case 'w':
