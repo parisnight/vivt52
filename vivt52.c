@@ -4,10 +4,9 @@
 #include <stdlib.h>
 #include <sys/ioctl.h>
 
-#define EBUSIZE 65536
 #define DECMAX(x) (x > 1 ? x-- : 1)
 
-char ebu[EBUSIZE];
+char ebu[65536]; /* editor buffer */
 char *bol, str[80], *p;
 int i, nb, row, col, ROWM=39;
 
@@ -48,9 +47,9 @@ void redraw ()
   fputs("\033[H\033[J",stdout);
   for (i=0, p=bol; i<ROWM && (p-ebu)<nb; p++) {
     fputc(*p,stdout);
-    if (*(p+1)=='\n') i++;
+    if (*p=='\n') i++;
   }
-  //      printf("bolchar %c row %d col %d ROWM %d\n",*bol, row,col,ROWM);
+  /* printf("bolchar %c row %d col %d ROWM %d\n",*bol, row,col,ROWM);*/
   fputs("\033[H",stdout);
   col=row=1;
 }
@@ -59,7 +58,6 @@ int main(int argc, const char** argv)
 {
   FILE *f;
   char c;
-  struct winsize w;
 
   for (i=0; i< sizeof ebu; i++) {
     ebu[i]='z';
