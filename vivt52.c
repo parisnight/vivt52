@@ -77,7 +77,7 @@ int main(int argc, const char** argv)
       if (bol < ebu+nb) {
         while (*bol != '\n') bol++; bol++;
         fputs("\033D",stdout);
-        if (row>ROWM-1) {
+        if (bol < ebu+nb && row>ROWM-1) {
           fputs("\0337\r",stdout);
           for (p=bol; *p!='\n'; p++) putchar(*p);
           fputs("\0338",stdout);
