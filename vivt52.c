@@ -8,7 +8,7 @@
 
 char ebu[65536]; /* editor buffer */
 char *bol, str[80], *p;
-int i, nb, row, col, ROWM=39;
+int i, nb, row, col, rowm=39, ROWM=39;
 
 void insertmode ()
 {
@@ -43,11 +43,11 @@ void redraw ()
   system("stty raw -echo opost isig"); /* isig to allow suspending */
   /*ROWM = atoi(system("stty size")) - 1; needs some parsing */
   /* if (p = getenv("LINES")) ROWM = atoi(p) - 1; needs export */
-  ioctl(0,TIOCGWINSZ,&w); ROWM=w.ws_row-1;
+  ioctl(0,TIOCGWINSZ,&w); rowm=w.ws_row; ROWM=w.ws_row-1;
   fputs("\033[H\033[J",stdout);
-  for (i=0, p=bol; i<ROWM && (p-ebu)<nb; p++) {
+  for (i=1, p=bol; i<rowm /*ROWM*/ && (p-ebu)<nb; p++) {
     fputc(*p,stdout);
-    if (*p=='\n') i++;
+    if (*(p+1)=='\n') i++; /* avoids \n in bottom line which clears top line */
   }
   /* printf("bolchar %c row %d col %d ROWM %d\n",*bol, row,col,ROWM);*/
   fputs("\033[H",stdout);
@@ -77,7 +77,7 @@ int main(int argc, const char** argv)
       if (bol < ebu+nb) {
         while (*bol != '\n') bol++; bol++;
         fputs("\033D",stdout);
-        if (bol < ebu+nb && row>ROWM-1) {
+        if (bol < ebu+nb && row>rowm-2 /*ROWM-1i*/) {
           fputs("\0337\r",stdout);
           for (p=bol; *p!='\n'; p++) putchar(*p);
           fputs("\0338",stdout);
