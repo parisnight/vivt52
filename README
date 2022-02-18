@@ -22,6 +22,7 @@ CSI ESD [ commands  terminator el [0x40,0x7e] ie no numbers in the command seque
 
 esc [H home
 esc [J clear to end of screen
+esc [K erase to end of line
 esc [D cursor left
 esc D scroll down
 esc M scroll up

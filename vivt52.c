@@ -45,9 +45,9 @@ void redraw ()
   /* if (p = getenv("LINES")) ROWM = atoi(p) - 1; needs export */
   ioctl(0,TIOCGWINSZ,&w); rowm=w.ws_row;
   fputs("\033[H\033[J",stdout);
-  for (i=1, p=bol; i<rowm && (p-ebu)<nb; p++) {
+  for (i=1, p=bol; i<=rowm && (p-ebu)<nb; p++) {
     fputc(*p,stdout);
-    if (*(p+1)=='\n') i++; /* avoids \n in bottom line which clears top line */
+    if (*(p+1)=='\n') i++; /* +1 avoids \n in bottom line (clears top line) */
   }
   /* printf("bolchar %c row %d col %d ROWM %d\n",*bol, row,col,ROWM);*/
   fputs("\033[H",stdout);
